@@ -19,26 +19,26 @@ public Joker(int file, int rank, Type type, Side side, Board board) {
 //		// TODO Auto-generated constructor stub
 //	}
 
-	@Override
-	boolean moveTo(int rank, int file) {
-		// TODO Auto-generated method stub
-		if(isValid() && !isBlocked()) {
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	boolean isValid() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	boolean isBlocked() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+//	@Override
+//	boolean moveTo(int rank, int file) {
+//		// TODO Auto-generated method stub
+//		if(isValid() && !isBlocked()) {
+//			return true;
+//		}
+//		return false;
+//	}
+//
+//	@Override
+//	boolean isValid() {
+//		// TODO Auto-generated method stub
+//		return false;
+//	}
+//
+//	@Override
+//	boolean isBlocked() {
+//		// TODO Auto-generated method stub
+//		return false;
+//	}
 
 	@Override
 	void setAttacking() {
@@ -50,6 +50,12 @@ public Joker(int file, int rank, Type type, Side side, Board board) {
 	ArrayList<Square> getAttacking() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	void setCanMoveTo() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -51,5 +51,13 @@ public class Square {
 		Square square = new Square(0,0);
 		System.out.println(square.toString());
 	}
+	
+	public int getFile() {
+		return file;
+	}
+	
+	public int getRank() {
+		return rank;
+	}
 
 }

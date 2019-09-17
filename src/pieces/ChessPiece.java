@@ -10,34 +10,73 @@ public abstract class ChessPiece {
 	public final Side side;
 	protected Board board;
 	protected ArrayList<Square> attacking;
+	protected ArrayList<Square> canMoveTo;
 	
-//	public ChessPiece(int file, int rank, Type type, Side side) {
-//		this.position = new Position(file, rank);
-//		this.attacking = new ArrayList<Square>();
-//		this.side = side;
-//		this.type = type;
-//		this.setAttacking();
-//	}
-	
+
 	public ChessPiece(int file, int rank, Type type, Side side, Board board) {
 		this.position = new Position(file, rank);
 		this.attacking = new ArrayList<Square>();
+		this.canMoveTo = new ArrayList<Square>();
 		this.side = side;
 		this.type = type;
 		this.board = board;
+		this.board.square[file][rank].setPiece(this);
 		this.setAttacking();
+		this.setCanMoveTo();
 		
 	}
 	
-	abstract boolean moveTo(int rank, int file);
-	
-	abstract boolean isValid();
-	
-	abstract boolean isBlocked();
-	
+//	
+//	
+//	abstract boolean isValid();
+//	
+//	abstract boolean isBlocked();
+//	
 	abstract void setAttacking();
 	
-	abstract ArrayList<Square> getAttacking();
+	void resetAttacking() {
+		attacking.clear();
+	}
+	
+	ArrayList<Square> getAttacking() {
+		return attacking;
+	}
+	
+	boolean moveTo(int file, int rank) {
+		for(Square square : canMoveTo) {
+			if(square.file == file && square.rank == rank) {
+				// if valid move
+				if(square.isOccupied()) {
+					square.getPiece().captured();
+				}
+				this.board.square[this.position.getX()][this.position.getY()].removePiece();
+				this.resetAttacking();
+				this.resetCanMoveTo();
+				
+				this.position.set(file, rank);
+				square.setPiece(this);
+				this.setAttacking();
+				this.setCanMoveTo();
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	void captured() {
+		this.board.square[position.getX()][position.getY()].removePiece();
+		this.position.set(-1, -1);
+	}
+	
+	void setCanMoveTo() {
+		for(Square square : attacking) {
+			canMoveTo.add(square);
+		}
+	}
+	
+	void resetCanMoveTo() {
+		canMoveTo.clear();
+	}
 	
 	boolean isHorizontalMove(int x, int y) {
 		if(y-this.position.getY() == 0) {
