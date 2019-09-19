@@ -1,18 +1,21 @@
 package board;
+
+import java.util.ArrayList;
+
 import pieces.ChessPiece;
 
 public class Square {
 	public final int file; //column
 	public final int rank; //row
 	private ChessPiece piece;
-	private boolean underAttack;
+	private ArrayList<pieces.Side> underAttack;
 	
 	public Square(int file, int rank) {
 		// TODO Auto-generated constructor stub
 		this.file = file;
 		this.rank = rank;
 		piece = null;
-		underAttack = false;
+		underAttack = new ArrayList<pieces.Side>();
 	}
 	
 	public void setPiece(ChessPiece piece) {
@@ -23,20 +26,27 @@ public class Square {
 		this.piece = null;
 	}
 	
-	public void setUnderAttack() {
-		this.underAttack = true;
+	public void setUnderAttack(pieces.ChessPiece piece) {
+		this.underAttack.add(piece.side);
 	}
 	
-	public void resetUnderAttack() {
-		this.underAttack = false;
+	public void resetUnderAttack(pieces.ChessPiece piece) {
+		this.underAttack.remove(piece.side);
 	}
 	
 	public boolean isOccupied() {
 		return (this.piece!=null);
 	}
 	
-	public boolean getUnderAttack() {
+	public ArrayList<pieces.Side> getUnderAttack() {
 		return this.underAttack;
+	}
+	
+	public boolean isUnderAttack(pieces.ChessPiece piece) {
+		if(underAttack.contains(piece.side.other())) {
+			return true;
+		}
+		return false;
 	}
 	
 	public ChessPiece getPiece() {

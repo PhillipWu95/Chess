@@ -57,12 +57,12 @@ public class Queen extends ChessPiece {
 				
 				if(square.isOccupied()) {
 					if(square.getPiece().side!=this.side) {
-						square.setUnderAttack();
+						square.setUnderAttack(this);
 						attacking.add(square);
 					}
 					break;
 				}
-				square.setUnderAttack();
+				square.setUnderAttack(this);
 				attacking.add(square);
 			}
 			check++;

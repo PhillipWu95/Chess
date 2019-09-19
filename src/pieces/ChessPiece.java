@@ -11,10 +11,12 @@ public abstract class ChessPiece {
 	protected Board board;
 	protected ArrayList<Square> attacking;
 	protected ArrayList<Square> canMoveTo;
+	protected boolean hasMoved;
 	
 
 	public ChessPiece(int file, int rank, Type type, Side side, Board board) {
 		this.position = new Position(file, rank);
+		this.hasMoved = false;
 		this.attacking = new ArrayList<Square>();
 		this.canMoveTo = new ArrayList<Square>();
 		this.side = side;
@@ -57,6 +59,7 @@ public abstract class ChessPiece {
 				square.setPiece(this);
 				this.setAttacking();
 				this.setCanMoveTo();
+				this.hasMoved = true;
 				return true;
 			}
 		}
