@@ -1,5 +1,7 @@
 package pieces;
 
+import java.util.ArrayList;
+
 import board.Board;
 import board.Square;
 
@@ -22,9 +24,38 @@ public class Pawn extends ChessPiece {
 		
 	}
 	
+	private ArrayList<Square> enPassantMove;
+	
 	public Pawn(int file, int rank, Type type, Side side, Board board) {
 		super(file, rank, type, side, board);
 		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	boolean moveTo(int file, int rank) {
+		ArrayList<Square> allCanMoveTo = new ArrayList<Square>();
+		allCanMoveTo.addAll(canMoveTo);
+		allCanMoveTo.addAll(enPassantMove);
+		
+		for(Square square : allCanMoveTo) {
+			if(square.file == file && square.rank == rank) {
+				// if valid move
+				if(square.isOccupied()) {
+					square.getPiece().captured();
+				}
+				this.board.square[this.position.getX()][this.position.getY()].removePiece();
+				this.resetAttacking();
+				this.resetCanMoveTo();
+				
+				this.position.set(file, rank);
+				square.setPiece(this);
+				this.setAttacking();
+				this.setCanMoveTo();
+				this.hasMoved = true;
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -84,7 +115,25 @@ public class Pawn extends ChessPiece {
 				System.out.println(e.getMessage());
 			}
 		}
+	} // end setAttacking()
+	
+	void setCanMoveTo() {
+		for(Square square : attacking) {
+			canMoveTo.add(square);
+		}
 		
-		
+		setEnPassantMove();
 	}
+	
+	void setEnPassantMove() {
+		int thisFile = this.position.getX();
+		int thisRank = this.position.getY();
+		if(this.side==Side.white && this.position.getY()==4) {
+			try {
+//				if(this.board.leftNOf(this.square, n))
+			}
+		}
+	}
+	
+	
 }

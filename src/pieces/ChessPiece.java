@@ -12,11 +12,13 @@ public abstract class ChessPiece {
 	protected ArrayList<Square> attacking;
 	protected ArrayList<Square> canMoveTo;
 	protected boolean hasMoved;
+	protected boolean canBeEnPassant;
 	
 
 	public ChessPiece(int file, int rank, Type type, Side side, Board board) {
 		this.position = new Position(file, rank);
 		this.hasMoved = false;
+		this.canBeEnPassant = false;
 		this.attacking = new ArrayList<Square>();
 		this.canMoveTo = new ArrayList<Square>();
 		this.side = side;

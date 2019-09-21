@@ -13,6 +13,21 @@ public class Board {
 		}
 	}
 	
+	public Square leftNOf(Square square, int n) {
+		return this.square[square.getFile()-n][square.getRank()];
+	}
+
+	public Square rightNOf(Square square, int n) {
+		return this.square[square.getFile()+n][square.getRank()];
+	}
+	
+	public Square upNOf(Square square, int n) {
+		return this.square[square.getFile()][square.getRank()+n];
+	}
+	
+	public Square downNOf(Square square, int n) {
+		return this.square[square.getFile()][square.getRank()-n];
+	}
 	
 
 }
