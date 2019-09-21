@@ -18,8 +18,8 @@ public class Queen extends ChessPiece {
 		int check = 0;
 		
 		while (check<8) {
-			int file = this.position.getX();
-			int rank = this.position.getY();
+			int file = this.square.getFile();
+			int rank = this.square.getRank();
 			while(rank>=0 && rank<8 && file>=0 & file<8) {
 				switch(check) {
 				case 0: 

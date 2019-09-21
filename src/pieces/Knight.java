@@ -15,8 +15,8 @@ public class Knight extends ChessPiece {
 		// TODO Auto-generated method stub
 		Square square;
 		
-		int thisFile = this.position.getX();
-		int thisRank = this.position.getY();
+		int thisFile = this.square.getFile();
+		int thisRank = this.square.getRank();
 
 		for(int file = 0; file < 8; file++) {
 			for(int rank = 0; rank < 8; rank++) {

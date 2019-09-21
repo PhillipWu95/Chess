@@ -9,6 +9,7 @@ public class Square {
 	public final int rank; //row
 	private ChessPiece piece;
 	private ArrayList<pieces.Side> underAttack;
+	private Board board;
 	
 	public Square(int file, int rank) {
 		// TODO Auto-generated constructor stub
@@ -16,6 +17,11 @@ public class Square {
 		this.rank = rank;
 		piece = null;
 		underAttack = new ArrayList<pieces.Side>();
+	}
+	
+	public Square(Board board, int file, int rank) {
+		this(file, rank);
+		this.board = board;
 	}
 	
 	public void setPiece(ChessPiece piece) {
@@ -68,6 +74,22 @@ public class Square {
 	
 	public int getRank() {
 		return rank;
+	}
+	
+	public Square leftN(int n) throws ArrayIndexOutOfBoundsException {
+		return this.board.square[this.getFile()-n][this.getRank()];
+	}
+	
+	public Square rightN(int n) throws ArrayIndexOutOfBoundsException {
+		return this.board.square[this.getFile()+n][this.getRank()];
+	}
+	
+	public Square upN(int n) throws ArrayIndexOutOfBoundsException {
+		return this.board.square[this.getFile()][this.getRank()+n];
+	}
+	
+	public Square downN(int n) throws ArrayIndexOutOfBoundsException {
+		return this.board.square[this.getFile()][this.getRank()-n];
 	}
 
 }

@@ -5,7 +5,8 @@ import board.Square;
 
 public abstract class ChessPiece {
 	
-	protected Position position;
+//	protected Position position;
+	protected Square square;
 	protected Type type;
 	public final Side side;
 	protected Board board;
@@ -16,7 +17,7 @@ public abstract class ChessPiece {
 	
 
 	public ChessPiece(int file, int rank, Type type, Side side, Board board) {
-		this.position = new Position(file, rank);
+		this.square = this.board.square[file][rank];
 		this.hasMoved = false;
 		this.canBeEnPassant = false;
 		this.attacking = new ArrayList<Square>();
@@ -53,12 +54,12 @@ public abstract class ChessPiece {
 				if(square.isOccupied()) {
 					square.getPiece().captured();
 				}
-				this.board.square[this.position.getX()][this.position.getY()].removePiece();
+				this.square.removePiece();
 				this.resetAttacking();
 				this.resetCanMoveTo();
 				
-				this.position.set(file, rank);
 				square.setPiece(this);
+				this.square = square;
 				this.setAttacking();
 				this.setCanMoveTo();
 				this.hasMoved = true;
@@ -69,8 +70,7 @@ public abstract class ChessPiece {
 	}
 	
 	void captured() {
-		this.board.square[position.getX()][position.getY()].removePiece();
-		this.position.set(-1, -1);
+		this.square.removePiece();
 	}
 	
 	void setCanMoveTo() {
@@ -82,49 +82,49 @@ public abstract class ChessPiece {
 	void resetCanMoveTo() {
 		canMoveTo.clear();
 	}
-	
-	boolean isHorizontalMove(int x, int y) {
-		if(y-this.position.getY() == 0) {
-			return true;
-		}
-		return false;
-	}
-	
-	boolean isHorizontalMove(Position pos) {
-		if(pos.getY()-this.position.getY() == 0) {
-			return true;
-		}
-		return false;
-	}
-	
-	boolean isVerticalMove(int x, int y) {
-		if(x-this.position.getX() == 0) {
-			return true;
-		}
-		return false;
-	}
-	
-	boolean isVerticalMove(Position pos) {
-		if(pos.getX()-this.position.getX() == 0) {
-			return true;
-		}
-		return false;
-	}
-	
-	boolean isDiagonalMove(int x, int y) {
-		return Math.abs(x-this.position.getX()) == Math.abs(y-this.position.getY()); 
-	}
-	
-	boolean isDiagonalMove(Position pos) {
-		return Math.abs(pos.getX()-this.position.getX()) == Math.abs(pos.getY()-this.position.getY());
-	}
-	
-	int moveDistance(int x, int y) {
-		return Math.max(Math.abs(x-this.position.getX()), Math.abs(y-this.position.getY()));
-	}
-	
-	int moveDistance(Position pos) {
-		return Math.max(Math.abs(pos.getX()-this.position.getX()), Math.abs(pos.getY()-this.position.getY()));
-	}
-	
+//	
+//	boolean isHorizontalMove(int x, int y) {
+//		if(y-this.position.getY() == 0) {
+//			return true;
+//		}
+//		return false;
+//	}
+//	
+//	boolean isHorizontalMove(Position pos) {
+//		if(pos.getY()-this.position.getY() == 0) {
+//			return true;
+//		}
+//		return false;
+//	}
+//	
+//	boolean isVerticalMove(int x, int y) {
+//		if(x-this.position.getX() == 0) {
+//			return true;
+//		}
+//		return false;
+//	}
+//	
+//	boolean isVerticalMove(Position pos) {
+//		if(pos.getX()-this.position.getX() == 0) {
+//			return true;
+//		}
+//		return false;
+//	}
+//	
+//	boolean isDiagonalMove(int x, int y) {
+//		return Math.abs(x-this.position.getX()) == Math.abs(y-this.position.getY()); 
+//	}
+//	
+//	boolean isDiagonalMove(Position pos) {
+//		return Math.abs(pos.getX()-this.position.getX()) == Math.abs(pos.getY()-this.position.getY());
+//	}
+//	
+//	int moveDistance(int x, int y) {
+//		return Math.max(Math.abs(x-this.position.getX()), Math.abs(y-this.position.getY()));
+//	}
+//	
+//	int moveDistance(Position pos) {
+//		return Math.max(Math.abs(pos.getX()-this.position.getX()), Math.abs(pos.getY()-this.position.getY()));
+//	}
+//	
 }

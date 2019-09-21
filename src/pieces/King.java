@@ -15,8 +15,8 @@ public class King extends ChessPiece {
 		// TODO Auto-generated method stub
 		Square square;
 		
-		int thisFile = this.position.getX();
-		int thisRank = this.position.getY();
+		int thisFile = this.square.getFile();
+		int thisRank = this.square.getRank();
 
 		for(int file = 0; file < 8; file++) {
 			for(int rank = 0; rank < 8; rank++) {
@@ -71,12 +71,13 @@ public class King extends ChessPiece {
 				if(square.isOccupied()) {
 					square.getPiece().captured();
 				}
-				this.board.square[this.position.getX()][this.position.getY()].removePiece();
+				this.square.removePiece();
 				this.resetAttacking();
 				this.resetCanMoveTo();
 				
-				this.position.set(file, rank);
+				
 				square.setPiece(this);
+				this.square = square;
 				this.setAttacking();
 				this.setCanMoveTo();
 				this.hasMoved = true;
