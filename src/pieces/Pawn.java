@@ -1,11 +1,14 @@
 package pieces;
 
 import java.util.ArrayList;
-
+import java.util.Scanner;
 import board.Board;
 import board.Square;
 
 public class Pawn extends ChessPiece {
+	
+	private ArrayList<Square> enPassantMove = new ArrayList<Square>();
+	private ArrayList<Square> doubleAdvance = new ArrayList<Square>();
 	
 	public class AttackingSameSideException extends Exception {
 		
@@ -24,7 +27,7 @@ public class Pawn extends ChessPiece {
 		
 	}
 	
-	private ArrayList<Square> enPassantMove;
+	
 	
 	public Pawn(int file, int rank, Type type, Side side, Board board) {
 		super(file, rank, type, side, board);
@@ -35,13 +38,30 @@ public class Pawn extends ChessPiece {
 		ArrayList<Square> allCanMoveTo = new ArrayList<Square>();
 		allCanMoveTo.addAll(canMoveTo);
 		allCanMoveTo.addAll(enPassantMove);
+		allCanMoveTo.addAll(doubleAdvance);
 		
-		for(Square square : canMoveTo) {
+		for(Square square : allCanMoveTo) {
 			if(square.file == file && square.rank == rank) {
 				// if valid move
 				if(square.isOccupied()) {
 					square.getPiece().captured();
 				}
+				
+				//double advancement check
+				if(doubleAdvance.contains(square)) {
+					this.canBeEnPassant = true;
+				} else {
+					this.canBeEnPassant = false;
+				}
+				
+				//enpassant attack check
+				if(enPassantMove.contains(square)) {
+					(this.side==Side.white ? square.downN(1) : square.upN(1)).getPiece().captured();
+				}
+				
+				
+				
+				
 				this.board.square[this.square.getFile()][this.square.getRank()].removePiece();
 				this.resetAttacking();
 				this.resetCanMoveTo();
@@ -52,30 +72,16 @@ public class Pawn extends ChessPiece {
 				this.setAttacking();
 				this.setCanMoveTo();
 				this.hasMoved = true;
+				
 				//TODO: pawn promotion
+				if(this.endOfLine()) {
+					this.pawnPromotion();
+				}
+
 				return true;
 			}
 		}
 		
-		for(Square square : enPassantMove) {
-			if(square.file == file && square.rank == rank) {
-				// if valid move
-				if(square.isOccupied()) {
-					square.getPiece().captured();
-				}
-				this.board.square[this.square.getFile()][this.square.getRank()].removePiece();
-				this.resetAttacking();
-				this.resetCanMoveTo();
-				
-				
-				square.setPiece(this);
-				this.square = square;
-				this.setAttacking();
-				this.setCanMoveTo();
-				this.hasMoved = true;
-				return true;
-			}
-		}
 		
 		return false;
 	}
@@ -144,9 +150,25 @@ public class Pawn extends ChessPiece {
 				canMoveTo.add(square);
 			}
 		}
-	
-		
+		addAdvance();
+		addDoubleAdvance();
 		addEnPassantMove();
+	}
+	
+	public void addAdvance() {
+		if(!this.square.upN(1).isOccupied()) {
+			this.canMoveTo.add(this.side==Side.white ? this.square.upN(1) : this.square.downN(1));
+		}
+	}
+	
+	public void addDoubleAdvance() {
+		if(!(this.square.upN(1).isOccupied() || this.square.upN(2).isOccupied())) {
+			if(!this.hasMoved) {
+				this.doubleAdvance.add(this.side==Side.white ? this.square.upN(2) : this.square.downN(2));
+			} else {
+				this.doubleAdvance.clear();
+			}
+		}
 	}
 	
 	public void addEnPassantMove() {
@@ -201,7 +223,34 @@ public class Pawn extends ChessPiece {
 		}
 	}
 	
-
+	public boolean endOfLine() {
+		return 
+			this.side == Side.white ? (this.square.getRank()==7) : (this.square.getRank()==0);  
+	}
+	
+	public void pawnPromotion() {
+		Type type = getUserTypeInput();
+		this.type = type;
+		this.resetAttacking();
+		this.setAttacking();
+	}
+	
+	public Type getUserTypeInput() {
+		// TODO: todo
+		Scanner scanner = new Scanner(System.in);
+		String typeStr = scanner.nextLine();
+		Type type;
+		while(true) {
+			try {
+				type = Type.valueOf(typeStr.toUpperCase());
+				break;
+			} catch (Exception e) {
+				continue;
+			}
+		}
+		scanner.close();
+		return type;
+	}
 	
 	
 }

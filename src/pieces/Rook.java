@@ -60,7 +60,7 @@ public class Rook extends ChessPiece {
 
 	public static void main(String args[]) {
 		Board newBoard = new Board();
-		ChessPiece newPiece = new Rook(0,0,Type.Rook,Side.white,newBoard);
+		ChessPiece newPiece = new Rook(0,0,Type.ROOK,Side.white,newBoard);
 		for(Square square:newPiece.attacking) {
 			System.out.println(square.toString());
 		}

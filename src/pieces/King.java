@@ -104,7 +104,7 @@ public class King extends ChessPiece {
 			Square leftRookSquare = this.board.square[0][0];
 			Square rightRookSquare = this.board.square[7][0];
 			if(leftRookSquare.isOccupied() 
-			&& leftRookSquare.getPiece().type == Type.Rook
+			&& leftRookSquare.getPiece().type == Type.ROOK
 			&& (!leftRookSquare.getPiece().hasMoved)
 			&& (!this.board.square[1][0].isOccupied())
 			&& (!this.board.square[2][0].isOccupied())
@@ -114,7 +114,7 @@ public class King extends ChessPiece {
 				canMoveTo.add(this.board.square[2][0]);
 			}
 			if(rightRookSquare.isOccupied() 
-			&& rightRookSquare.getPiece().type == Type.Rook
+			&& rightRookSquare.getPiece().type == Type.ROOK
 			&& (!rightRookSquare.getPiece().hasMoved)
 			&& (!this.board.square[5][0].isOccupied())
 			&& (!this.board.square[5][0].isUnderAttack(this))
@@ -126,7 +126,7 @@ public class King extends ChessPiece {
 			Square leftRookSquare = this.board.square[0][7];
 			Square rightRookSquare = this.board.square[7][7];
 			if(leftRookSquare.isOccupied() 
-			&& leftRookSquare.getPiece().type == Type.Rook
+			&& leftRookSquare.getPiece().type == Type.ROOK
 			&& (!leftRookSquare.getPiece().hasMoved)
 			&& (!this.board.square[1][7].isOccupied())
 			&& (!this.board.square[2][7].isOccupied())
@@ -136,7 +136,7 @@ public class King extends ChessPiece {
 				canMoveTo.add(this.board.square[1][7]);
 			}
 			if(rightRookSquare.isOccupied() 
-			&& rightRookSquare.getPiece().type == Type.Rook
+			&& rightRookSquare.getPiece().type == Type.ROOK
 			&& (!rightRookSquare.getPiece().hasMoved)
 			&& (!this.board.square[5][7].isOccupied())
 			&& (!this.board.square[5][7].isUnderAttack(this))
