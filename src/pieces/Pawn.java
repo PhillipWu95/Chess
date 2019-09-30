@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import board.Board;
 import board.Square;
+import pieces.King.KingCapturedException;
 
 public class Pawn extends ChessPiece {
 	
-	private ArrayList<Square> enPassantMove = new ArrayList<Square>();
-	private ArrayList<Square> doubleAdvance = new ArrayList<Square>();
+	private ArrayList<Square> enPassantMove;
+	private ArrayList<Square> doubleAdvance;
 	
 	public class AttackingSameSideException extends Exception {
 		
@@ -30,11 +31,24 @@ public class Pawn extends ChessPiece {
 	
 	
 	public Pawn(int file, int rank, Type type, Side side, Board board) {
-		super(file, rank, type, side, board);
+//		super(file, rank, type, side, board);
+		this.enPassantMove = new ArrayList<Square>();
+		this.doubleAdvance = new ArrayList<Square>();
+		this.board = board;
+		this.square = this.board.square[file][rank];
+		this.hasMoved = false;
+		this.canBeEnPassant = false;
+		this.attacking = new ArrayList<Square>();
+		this.canMoveTo = new ArrayList<Square>();
+		this.side = side;
+		this.type = type;
+		this.board.square[file][rank].setPiece(this);
+		this.setAttacking();
+		this.setCanMoveTo();
 	}
 	
 	@Override
-	public boolean moveTo(int file, int rank) {
+	public boolean moveTo(int file, int rank) throws KingCapturedException {
 		ArrayList<Square> allCanMoveTo = new ArrayList<Square>();
 		allCanMoveTo.addAll(canMoveTo);
 		allCanMoveTo.addAll(enPassantMove);
@@ -56,7 +70,8 @@ public class Pawn extends ChessPiece {
 				
 				//enpassant attack check
 				if(enPassantMove.contains(square)) {
-					(this.side==Side.white ? square.downN(1) : square.upN(1)).getPiece().captured();
+						(this.side==Side.white ? square.downN(1) : square.upN(1))
+					.getPiece().captured();
 				}
 				
 				
@@ -156,17 +171,31 @@ public class Pawn extends ChessPiece {
 	}
 	
 	public void addAdvance() {
-		if(!this.square.upN(1).isOccupied()) {
-			this.canMoveTo.add(this.side==Side.white ? this.square.upN(1) : this.square.downN(1));
+		if(this.side==Side.white && !this.square.upN(1).isOccupied()) {
+			this.canMoveTo.add(this.square.upN(1));
+		}
+		else if(this.side==Side.black && !this.square.downN(1).isOccupied()) {
+			this.canMoveTo.add(this.square.downN(1));
 		}
 	}
 	
 	public void addDoubleAdvance() {
-		if(!(this.square.upN(1).isOccupied() || this.square.upN(2).isOccupied())) {
-			if(!this.hasMoved) {
-				this.doubleAdvance.add(this.side==Side.white ? this.square.upN(2) : this.square.downN(2));
-			} else {
-				this.doubleAdvance.clear();
+		if(this.side == Side.white) {
+			if(!(this.square.upN(1).isOccupied() || this.square.upN(2).isOccupied())) {
+				if(!this.hasMoved) {
+//					this.doubleAdvance.add(this.square.upN(2));
+					this.doubleAdvance.add(this.square);
+				} else {
+					this.doubleAdvance.clear();
+				}
+			}
+		} else if(this.side == Side.black) {
+			if(!(this.square.downN(1).isOccupied() || this.square.downN(2).isOccupied())) {
+				if(!this.hasMoved) {
+					this.doubleAdvance.add(this.square.downN(2));
+				} else {
+					this.doubleAdvance.clear();
+				}
 			}
 		}
 	}
@@ -252,5 +281,8 @@ public class Pawn extends ChessPiece {
 		return type;
 	}
 	
+	public String toString() {
+		return "P";
+	}
 	
 }

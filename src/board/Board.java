@@ -1,5 +1,10 @@
 package board;
 
+//import pieces.ChessPiece;
+import pieces.*;
+//import pieces.Side;
+//import pieces.Type;
+
 public class Board {
 	
 	public final Square[][] square = new Square[8][8];
@@ -12,6 +17,73 @@ public class Board {
 			}
 		}
 	}
+	
+	public void classicalInit() {
+		// TODO: do this
+		int file = 0;
+		int rank = 0;
+		Side side;
+		Type type;
+		for(rank = 0; rank < 8; rank++) {
+			for(file = 0; file < 8; file++) {
+				if(rank < 2) {
+					side = Side.white;
+				}
+				else if(rank>5){
+					side = Side.black;
+				}
+				else {
+					continue;
+				}
+				if((rank==0 || rank == 7) && (file==0 || file == 7)) {
+					type = Type.ROOK;
+					this.square[file][rank].setPiece(new Rook(file, rank, type, side, this));
+				}
+				if((rank==0 || rank == 7) && (file==1 || file == 6)) {
+					type = Type.KNIGHT;
+					this.square[file][rank].setPiece(new Knight(file, rank, type, side, this));
+				}
+				if((rank==0 || rank == 7) && (file==2 || file == 5)) {
+					type = Type.BISHOP;
+					this.square[file][rank].setPiece(new Bishop(file, rank, type, side, this));
+				}
+				if((rank==0 || rank == 7) && (file==3)) {
+					type = Type.QUEEN;
+					this.square[file][rank].setPiece(new Queen(file, rank, type, side, this));
+				}
+				if((rank==0 || rank == 7) && (file==4)) {
+					type = Type.KING;
+					this.square[file][rank].setPiece(new King(file, rank, type, side, this));
+				}
+				if((rank==1 || rank == 6)) {
+					type = Type.PAWN;
+					this.square[file][rank].setPiece(new Pawn(file, rank, type, side, this));
+				}
+				
+			}		
+		}
+		
+	}
+	
+	public void draw() {
+		int file = 0;
+		int rank = 0;
+		for(rank = 0; rank < 8; rank++) {
+			for(file = 0; file < 8; file++) {
+				if(this.square[file][rank].getPiece()==null) {
+					System.out.printf("#");
+				}
+				else {
+					System.out.printf("%s",this.square[file][rank].getPiece().toString());
+				}
+				System.out.printf("\t");
+			}
+			System.out.println();
+			System.out.println();
+		}
+	}
+	
+	
 	
 //	public Square leftNOf(Square square, int n) {
 //		return this.square[square.getFile()-n][square.getRank()];
@@ -29,5 +101,11 @@ public class Board {
 //		return this.square[square.getFile()][square.getRank()-n];
 //	}
 //	
+	public static void main(String [] args) {
+		Board board = new Board();
+		board.classicalInit();
+		board.draw();
+	}
+			
 
 }

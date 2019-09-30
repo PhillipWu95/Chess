@@ -2,21 +2,26 @@ package pieces;
 import java.util.ArrayList;
 import board.Board;
 import board.Square;
+import pieces.King.KingCapturedException;
 
 public abstract class ChessPiece {
 	
 //	protected Position position;
 	protected Square square;
 	protected Type type;
-	public final Side side;
+	public Side side;
 	protected Board board;
 	protected ArrayList<Square> attacking;
 	protected ArrayList<Square> canMoveTo;
 	protected boolean hasMoved;
 	protected boolean canBeEnPassant;
 	
+	public ChessPiece() {
+		
+	}
 
 	public ChessPiece(int file, int rank, Type type, Side side, Board board) {
+		this.board = board;
 		this.square = this.board.square[file][rank];
 		this.hasMoved = false;
 		this.canBeEnPassant = false;
@@ -24,7 +29,6 @@ public abstract class ChessPiece {
 		this.canMoveTo = new ArrayList<Square>();
 		this.side = side;
 		this.type = type;
-		this.board = board;
 		this.board.square[file][rank].setPiece(this);
 		this.setAttacking();
 		this.setCanMoveTo();
@@ -47,7 +51,7 @@ public abstract class ChessPiece {
 		return attacking;
 	}
 	
-	boolean moveTo(int file, int rank) {
+	public boolean moveTo(int file, int rank) throws KingCapturedException {
 		for(Square square : canMoveTo) {
 			if(square.file == file && square.rank == rank) {
 				// if valid move
@@ -69,7 +73,7 @@ public abstract class ChessPiece {
 		return false;
 	}
 	
-	void captured() {
+	void captured() throws KingCapturedException {
 		this.square.removePiece();
 	}
 	

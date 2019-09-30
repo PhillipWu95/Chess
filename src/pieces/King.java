@@ -3,7 +3,21 @@ package pieces;
 import board.Board;
 import board.Square;
 
-public class King extends ChessPiece {
+public class King extends ChessPiece{
+	
+	public class KingCapturedException extends Exception {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		private Side side;
+		
+		KingCapturedException(Side side) {
+			this.side = side;
+		}
+		
+	}
 
 	public King(int file, int rank, Type type, Side side, Board board) {
 		super(file, rank, type, side, board);
@@ -45,7 +59,13 @@ public class King extends ChessPiece {
 	}
 	
 	@Override
-	boolean moveTo(int file, int rank) {
+	public void captured() throws KingCapturedException{
+		this.square.removePiece();
+		throw new KingCapturedException(this.side);
+	}
+	
+	@Override
+	public boolean moveTo(int file, int rank) throws KingCapturedException {
 		for(Square square : canMoveTo) {
 			if(square.file == file && square.rank == rank) {
 				// if valid move
@@ -145,7 +165,10 @@ public class King extends ChessPiece {
 				canMoveTo.add(this.board.square[6][7]);
 			}
 		} 
-		
+	}
+	
+	public String toString() {
+		return "+";
 	}
 
 }

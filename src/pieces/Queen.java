@@ -68,7 +68,10 @@ public class Queen extends ChessPiece {
 			check++;
 		}
 
-
+	}
+	
+	public String toString() {
+		return "Q";
 	}
 
 }

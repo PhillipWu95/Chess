@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import board.Board;
 import board.Square;
+import pieces.King.KingCapturedException;
 
 public class Rook extends ChessPiece {
 
@@ -56,9 +57,11 @@ public class Rook extends ChessPiece {
 
 	}
 		
-	
+	public String toString() {
+		return "R";
+	}
 
-	public static void main(String args[]) {
+	public static void main(String args[]) throws KingCapturedException {
 		Board newBoard = new Board();
 		ChessPiece newPiece = new Rook(0,0,Type.ROOK,Side.white,newBoard);
 		for(Square square:newPiece.attacking) {
@@ -71,6 +74,8 @@ public class Rook extends ChessPiece {
 			System.out.println(square.toString());
 		}
 	}
+	
+	
 
 	
 }

@@ -62,7 +62,11 @@ public class Bishop extends ChessPiece {
 			check++;
 		}
 
-
+	}
+	
+	
+	public String toString() {
+		return "A";
 	}
 
 
