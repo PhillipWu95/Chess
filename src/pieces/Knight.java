@@ -11,10 +11,10 @@ public class Knight extends ChessPiece {
 	}
 
 	@Override
-	void setAttacking() {
+	public void setAttacking() {
 		// TODO Auto-generated method stub
 		Square square;
-		
+		this.resetAttacking();
 		int thisFile = this.square.getFile();
 		int thisRank = this.square.getRank();
 
@@ -25,12 +25,12 @@ public class Knight extends ChessPiece {
 				
 
 				if((fileDis==1 && rankDis==2) || (fileDis==2 && rankDis==1)) {
-					square = this.board.square[file][rank];
-					if(square.isOccupied()) {
-						if(square.getPiece().side==this.side) {
-							continue;
-						}
-					}
+					square = this.board.squares[file][rank];
+//					if(square.isOccupied()) {
+//						if(square.getPiece().side==this.side) {
+//							continue;
+//						}
+//					}
 					square.setUnderAttack(this);
 					this.attacking.add(square);
 				}

@@ -35,66 +35,82 @@ public class Pawn extends ChessPiece {
 		this.enPassantMove = new ArrayList<Square>();
 		this.doubleAdvance = new ArrayList<Square>();
 		this.board = board;
-		this.square = this.board.square[file][rank];
+		this.square = this.board.squares[file][rank];
 		this.hasMoved = false;
 		this.canBeEnPassant = false;
 		this.attacking = new ArrayList<Square>();
 		this.canMoveTo = new ArrayList<Square>();
 		this.side = side;
 		this.type = type;
-		this.board.square[file][rank].setPiece(this);
+		this.board.squares[file][rank].setPiece(this);
 		this.setAttacking();
 		this.setCanMoveTo();
 	}
 	
 	@Override
 	public boolean moveTo(int file, int rank) throws KingCapturedException {
+		
+		boolean validMove = false;
+		Square square = null;
+		
 		ArrayList<Square> allCanMoveTo = new ArrayList<Square>();
 		allCanMoveTo.addAll(canMoveTo);
 		allCanMoveTo.addAll(enPassantMove);
 		allCanMoveTo.addAll(doubleAdvance);
 		
-		for(Square square : allCanMoveTo) {
-			if(square.file == file && square.rank == rank) {
+		for(Square targetSquare : allCanMoveTo) {
+			System.out.println("Can Move to:");
+			System.out.println(targetSquare.file+" "+targetSquare.rank);
+		}
+		
+		for(Square targetSquare : allCanMoveTo) {
+			if(targetSquare.file == file && targetSquare.rank == rank) {
 				// if valid move
-				if(square.isOccupied()) {
-					square.getPiece().captured();
-				}
-				
-				//double advancement check
-				if(doubleAdvance.contains(square)) {
-					this.canBeEnPassant = true;
-				} else {
-					this.canBeEnPassant = false;
-				}
-				
-				//enpassant attack check
-				if(enPassantMove.contains(square)) {
-						(this.side==Side.white ? square.downN(1) : square.upN(1))
-					.getPiece().captured();
-				}
-				
-				
-				
-				
-				this.board.square[this.square.getFile()][this.square.getRank()].removePiece();
-				this.resetAttacking();
-				this.resetCanMoveTo();
-				
-				
-				square.setPiece(this);
-				this.square = square;
-				this.setAttacking();
-				this.setCanMoveTo();
-				this.hasMoved = true;
-				
-				//TODO: pawn promotion
-				if(this.endOfLine()) {
-					this.pawnPromotion();
-				}
-
-				return true;
+				validMove = true;
+				square = targetSquare;
 			}
+		}
+		
+		if(validMove) {
+			if(square.isOccupied()) {
+				square.getPiece().captured();
+			}
+			
+			//double advancement check
+			if(doubleAdvance.contains(square)) {
+				this.canBeEnPassant = true;
+			} else {
+				this.canBeEnPassant = false;
+			}
+			
+			//enpassant attack check
+			if(enPassantMove.contains(square)) {
+					(this.side==Side.white ? square.downN(1) : square.upN(1))
+				.getPiece().captured();
+			}
+			
+//			if(attacking.contains(square)) {
+//				square.getPiece().captured();
+//			}
+			
+			
+			this.square.removePiece();
+			this.square.reCalculateUnderAttack();
+			
+			
+			square.setPiece(this);
+			this.square = square;
+			this.square.reCalculateUnderAttack();
+			this.setAttacking();
+			this.setCanMoveTo();
+			this.hasMoved = true;
+			
+			//TODO: pawn promotion
+			if(this.endOfLine()) {
+				this.pawnPromotion();
+			}
+
+			return true;
 		}
 		
 		
@@ -104,28 +120,29 @@ public class Pawn extends ChessPiece {
 	@Override
 	public void setAttacking() {
 		Square square;
+		this.resetAttacking();
 		int thisFile = this.square.getFile();
 		int thisRank = this.square.getRank();
 		if(this.side==Side.white) {
 			try {
-				square = this.board.square[thisFile-1][thisRank+1];
-				if(square.isOccupied()) {
-					if(square.getPiece().side==this.side) {
-						throw new AttackingSameSideException();
-					}
-				}
+				square = this.board.squares[thisFile-1][thisRank+1];
+//				if(square.isOccupied()) {
+//					if(square.getPiece().side==this.side) {
+//						throw new AttackingSameSideException();
+//					}
+//				}
 				square.setUnderAttack(this);
 				this.attacking.add(square);
 			} catch(Exception e){
 				System.out.println(e.getMessage());
 			}
 			try {
-				square = this.board.square[thisFile+1][thisRank+1];
-				if(square.isOccupied()) {
-					if(square.getPiece().side==this.side) {
-						throw new AttackingSameSideException();
-					}
-				}
+				square = this.board.squares[thisFile+1][thisRank+1];
+//				if(square.isOccupied()) {
+//					if(square.getPiece().side==this.side) {
+//						throw new AttackingSameSideException();
+//					}
+//				}
 				square.setUnderAttack(this);
 				this.attacking.add(square);
 			} catch(Exception e){
@@ -133,24 +150,24 @@ public class Pawn extends ChessPiece {
 			}
 		} else if(this.side==Side.black) {
 			try {
-				square = this.board.square[thisFile-1][thisRank-1];
-				if(square.isOccupied()) {
-					if(square.getPiece().side==this.side) {
-						throw new AttackingSameSideException();
-					}
-				}
+				square = this.board.squares[thisFile-1][thisRank-1];
+//				if(square.isOccupied()) {
+//					if(square.getPiece().side==this.side) {
+//						throw new AttackingSameSideException();
+//					}
+//				}
 				square.setUnderAttack(this);
 				this.attacking.add(square);
 			} catch(Exception e){
 				System.out.println(e.getMessage());
 			}
 			try {
-				square = this.board.square[thisFile+1][thisRank-1];
-				if(square.isOccupied()) {
-					if(square.getPiece().side==this.side) {
-						throw new AttackingSameSideException();
-					}
-				}
+				square = this.board.squares[thisFile+1][thisRank-1];
+//				if(square.isOccupied()) {
+//					if(square.getPiece().side==this.side) {
+//						throw new AttackingSameSideException();
+//					}
+//				}
 				square.setUnderAttack(this);
 				this.attacking.add(square);
 			} catch(Exception e){
@@ -160,6 +177,7 @@ public class Pawn extends ChessPiece {
 	} // end setAttacking()
 	
 	public void setCanMoveTo() {
+		this.resetCanMoveTo();
 		for(Square square : attacking) {
 			if(square.isOccupied() && square.getPiece().side!=this.side) {
 				canMoveTo.add(square);
@@ -180,11 +198,12 @@ public class Pawn extends ChessPiece {
 	}
 	
 	public void addDoubleAdvance() {
+		doubleAdvance.clear();
+		
 		if(this.side == Side.white) {
 			if(!(this.square.upN(1).isOccupied() || this.square.upN(2).isOccupied())) {
 				if(!this.hasMoved) {
-//					this.doubleAdvance.add(this.square.upN(2));
-					this.doubleAdvance.add(this.square);
+					this.doubleAdvance.add(this.square.upN(2));
 				} else {
 					this.doubleAdvance.clear();
 				}

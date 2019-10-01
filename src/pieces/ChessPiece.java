@@ -22,16 +22,16 @@ public abstract class ChessPiece {
 
 	public ChessPiece(int file, int rank, Type type, Side side, Board board) {
 		this.board = board;
-		this.square = this.board.square[file][rank];
+		this.square = this.board.squares[file][rank];
 		this.hasMoved = false;
 		this.canBeEnPassant = false;
 		this.attacking = new ArrayList<Square>();
 		this.canMoveTo = new ArrayList<Square>();
 		this.side = side;
 		this.type = type;
-		this.board.square[file][rank].setPiece(this);
-		this.setAttacking();
-		this.setCanMoveTo();
+		this.board.squares[file][rank].setPiece(this);
+//		this.setAttacking();
+//		this.setCanMoveTo();
 		
 	}
 	
@@ -41,9 +41,12 @@ public abstract class ChessPiece {
 //	
 //	abstract boolean isBlocked();
 //	
-	abstract void setAttacking();
+	abstract public void setAttacking();
 	
 	void resetAttacking() {
+		for(Square square : this.attacking) {
+			square.resetUnderAttack(this);
+		}
 		attacking.clear();
 	}
 	
@@ -52,33 +55,52 @@ public abstract class ChessPiece {
 	}
 	
 	public boolean moveTo(int file, int rank) throws KingCapturedException {
-		for(Square square : canMoveTo) {
-			if(square.file == file && square.rank == rank) {
+		
+		Square square = null;
+		boolean validMove = false;
+		
+		for(Square targetSquare : canMoveTo) {
+			if(targetSquare.file == file && targetSquare.rank == rank) {
 				// if valid move
-				if(square.isOccupied()) {
-					square.getPiece().captured();
-				}
-				this.square.removePiece();
-				this.resetAttacking();
-				this.resetCanMoveTo();
+				validMove = true;
+				square = targetSquare;
 				
-				square.setPiece(this);
-				this.square = square;
-				this.setAttacking();
-				this.setCanMoveTo();
-				this.hasMoved = true;
-				return true;
 			}
 		}
+		
+		if(validMove) {
+			if(square.isOccupied()) {
+				square.getPiece().captured();
+			}
+			this.square.removePiece();
+			this.square.reCalculateUnderAttack();
+//			this.resetAttacking();
+//			this.resetCanMoveTo();
+			
+			square.setPiece(this);
+			square.reCalculateUnderAttack();
+			this.square = square;
+			this.setAttacking();
+			this.setCanMoveTo();
+			this.hasMoved = true;
+			return true;
+		}
+		
 		return false;
 	}
 	
 	void captured() throws KingCapturedException {
+		this.resetAttacking();
+		this.resetCanMoveTo();
 		this.square.removePiece();
 	}
 	
-	void setCanMoveTo() {
+	public void setCanMoveTo() {
+		resetCanMoveTo();
 		for(Square square : attacking) {
+			if(square.isOccupied() && square.getPiece().side==this.side) {
+				continue;
+			}
 			canMoveTo.add(square);
 		}
 	}
@@ -86,49 +108,4 @@ public abstract class ChessPiece {
 	void resetCanMoveTo() {
 		canMoveTo.clear();
 	}
-//	
-//	boolean isHorizontalMove(int x, int y) {
-//		if(y-this.position.getY() == 0) {
-//			return true;
-//		}
-//		return false;
-//	}
-//	
-//	boolean isHorizontalMove(Position pos) {
-//		if(pos.getY()-this.position.getY() == 0) {
-//			return true;
-//		}
-//		return false;
-//	}
-//	
-//	boolean isVerticalMove(int x, int y) {
-//		if(x-this.position.getX() == 0) {
-//			return true;
-//		}
-//		return false;
-//	}
-//	
-//	boolean isVerticalMove(Position pos) {
-//		if(pos.getX()-this.position.getX() == 0) {
-//			return true;
-//		}
-//		return false;
-//	}
-//	
-//	boolean isDiagonalMove(int x, int y) {
-//		return Math.abs(x-this.position.getX()) == Math.abs(y-this.position.getY()); 
-//	}
-//	
-//	boolean isDiagonalMove(Position pos) {
-//		return Math.abs(pos.getX()-this.position.getX()) == Math.abs(pos.getY()-this.position.getY());
-//	}
-//	
-//	int moveDistance(int x, int y) {
-//		return Math.max(Math.abs(x-this.position.getX()), Math.abs(y-this.position.getY()));
-//	}
-//	
-//	int moveDistance(Position pos) {
-//		return Math.max(Math.abs(pos.getX()-this.position.getX()), Math.abs(pos.getY()-this.position.getY()));
-//	}
-//	
 }

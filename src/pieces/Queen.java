@@ -11,12 +11,12 @@ public class Queen extends ChessPiece {
 	}
 
 	@Override
-	void setAttacking() {
+	public void setAttacking() {
 		// 
 		
 		Square square;
 		int check = 0;
-		
+		this.resetAttacking();
 		while (check<8) {
 			int file = this.square.getFile();
 			int rank = this.square.getRank();
@@ -50,16 +50,16 @@ public class Queen extends ChessPiece {
 					break;
 				}
 				try {
-					square = board.square[file][rank];
+					square = board.squares[file][rank];
 				} catch(Exception e) {
 					break;
 				}
 				
 				if(square.isOccupied()) {
-					if(square.getPiece().side!=this.side) {
-						square.setUnderAttack(this);
-						attacking.add(square);
-					}
+//					if(square.getPiece().side!=this.side) {
+					square.setUnderAttack(this);
+					attacking.add(square);
+//					}
 					break;
 				}
 				square.setUnderAttack(this);

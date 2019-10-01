@@ -15,8 +15,8 @@ public class Game {
 	
 	public Game() {
 		this.board = new Board();
-		playerBlack = new Player("black", Side.black);
-		playerWhite = new Player("white", Side.white);
+		playerBlack = new Player("black", Side.black, this.board);
+		playerWhite = new Player("white", Side.white, this.board);
 	}
 	
 	public Game(Player playerBlack, Player playerWhite) {
@@ -33,12 +33,14 @@ public class Game {
 		while(true) {
 			
 			try {
+				this.board.draw();
 				System.out.println("White move:");
 				from = keyboard.next();
 				to = keyboard.next();
 				playerWhite.move(from, to);
 				
-				System.out.println("White move:");
+				this.board.draw();
+				System.out.println("Black move:");
 				from = keyboard.next();
 				to = keyboard.next();
 				playerBlack.move(from, to);
@@ -58,6 +60,10 @@ public class Game {
 		Game newGame = new Game();
 		newGame.startClassical();
 	}
-	
+	// TODO: The problem right now is that a piece can move into a square
+	// and change the square and some other squares' underattack status
+	// Need to add a list for each square recording which piece is attacking it
+	// once a piece move into a square, all the pieces that's attacking it 
+	// must recalculate their attacking
 	
 }

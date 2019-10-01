@@ -8,7 +8,7 @@ public class Square {
 	public final int file; //column
 	public final int rank; //row
 	private ChessPiece piece;
-	private ArrayList<pieces.Side> underAttack;
+	private ArrayList<ChessPiece> underAttack;
 	private Board board;
 	
 	public Square(int file, int rank) {
@@ -16,7 +16,7 @@ public class Square {
 		this.file = file;
 		this.rank = rank;
 		piece = null;
-		underAttack = new ArrayList<pieces.Side>();
+		underAttack = new ArrayList<ChessPiece>();
 	}
 	
 	public Square(Board board, int file, int rank) {
@@ -32,25 +32,43 @@ public class Square {
 		this.piece = null;
 	}
 	
-	public void setUnderAttack(pieces.ChessPiece piece) {
-		this.underAttack.add(piece.side);
+	public void setUnderAttack(ChessPiece piece) {
+		this.underAttack.add(piece);
 	}
 	
-	public void resetUnderAttack(pieces.ChessPiece piece) {
-		this.underAttack.remove(piece.side);
+	public void resetUnderAttack(ChessPiece piece) {
+		this.underAttack.remove(piece);
+	}
+	
+	public void reCalculateUnderAttack() {
+//		for(ChessPiece piece : underAttack) {
+//			piece.setAttacking();
+//			piece.setCanMoveTo();
+//		}
+		ArrayList<ChessPiece> tempUnderAttack = new ArrayList<ChessPiece>();
+		for(ChessPiece piece : underAttack) {
+			tempUnderAttack.add(piece);
+		}
+		underAttack.clear();
+		for(ChessPiece piece : tempUnderAttack) {
+			piece.setAttacking();
+			piece.setCanMoveTo();
+		}
 	}
 	
 	public boolean isOccupied() {
 		return (this.piece!=null);
 	}
 	
-	public ArrayList<pieces.Side> getUnderAttack() {
+	public ArrayList<ChessPiece> getUnderAttack() {
 		return this.underAttack;
 	}
 	
-	public boolean isUnderAttack(pieces.ChessPiece piece) {
-		if(underAttack.contains(piece.side.other())) {
-			return true;
+	public boolean isUnderAttack(ChessPiece thisPiece) {
+		for(ChessPiece otherPiece : underAttack) {
+			if(otherPiece.side != thisPiece.side) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -77,19 +95,21 @@ public class Square {
 	}
 	
 	public Square leftN(int n) throws ArrayIndexOutOfBoundsException {
-		return this.board.square[this.getFile()-n][this.getRank()];
+		return this.board.squares[this.getFile()-n][this.getRank()];
 	}
 	
 	public Square rightN(int n) throws ArrayIndexOutOfBoundsException {
-		return this.board.square[this.getFile()+n][this.getRank()];
+		return this.board.squares[this.getFile()+n][this.getRank()];
 	}
 	
 	public Square upN(int n) throws ArrayIndexOutOfBoundsException {
-		return this.board.square[this.getFile()][this.getRank()+n];
+		return this.board.squares[this.getFile()][this.getRank()+n];
 	}
 	
 	public Square downN(int n) throws ArrayIndexOutOfBoundsException {
-		return this.board.square[this.getFile()][this.getRank()-n];
+		return this.board.squares[this.getFile()][this.getRank()-n];
 	}
+	
+	
 
 }

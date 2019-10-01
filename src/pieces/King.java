@@ -25,10 +25,10 @@ public class King extends ChessPiece{
 	}
 
 	@Override
-	void setAttacking() {
+	public void setAttacking() {
 		// TODO Auto-generated method stub
 		Square square;
-		
+		this.resetAttacking();
 		int thisFile = this.square.getFile();
 		int thisRank = this.square.getRank();
 
@@ -39,13 +39,13 @@ public class King extends ChessPiece{
 				
 
 				if(Math.max(fileDis, rankDis)==1) {
-					square = this.board.square[file][rank];
-					if(square.isOccupied()) {
-						if(square.getPiece().side==this.side) {
-							continue;
-						}
-					}
-					else if(square.getUnderAttack().contains(this.side.other())) {
+					square = this.board.squares[file][rank];
+//					if(square.isOccupied()) {
+//						if(square.getPiece().side==this.side) {
+//							continue;
+//						}
+//					}
+					if(square.getUnderAttack().contains(this.side.other())) {
 						continue;
 					}
 					square.setUnderAttack(this);
@@ -73,17 +73,17 @@ public class King extends ChessPiece{
 				if(!this.hasMoved) {
 					if(this.side==Side.white) {
 						if(file==2 && rank==0) {
-							this.board.square[0][0].getPiece().moveTo(3,0);
+							this.board.squares[0][0].getPiece().moveTo(3,0);
 						}
 						if(file==6 && rank==0) {
-							this.board.square[7][0].getPiece().moveTo(5,0);
+							this.board.squares[7][0].getPiece().moveTo(5,0);
 						}
 					} else if(this.side==Side.black) {
 						if(file==2 && rank==7) {
-							this.board.square[0][7].getPiece().moveTo(3,7);
+							this.board.squares[0][7].getPiece().moveTo(3,7);
 						}
 						if(file==6 && rank==0) {
-							this.board.square[7][7].getPiece().moveTo(5,7);
+							this.board.squares[7][7].getPiece().moveTo(5,7);
 						}
 					}
 				}
@@ -107,7 +107,7 @@ public class King extends ChessPiece{
 		return false;
 	}
 	
-	void setCanMoveTo() {
+	public void setCanMoveTo() {
 		for(Square square : attacking) {
 			canMoveTo.add(square);
 		}
@@ -121,48 +121,48 @@ public class King extends ChessPiece{
 			return;
 		}
 		if(this.side == Side.white) {
-			Square leftRookSquare = this.board.square[0][0];
-			Square rightRookSquare = this.board.square[7][0];
+			Square leftRookSquare = this.board.squares[0][0];
+			Square rightRookSquare = this.board.squares[7][0];
 			if(leftRookSquare.isOccupied() 
 			&& leftRookSquare.getPiece().type == Type.ROOK
 			&& (!leftRookSquare.getPiece().hasMoved)
-			&& (!this.board.square[1][0].isOccupied())
-			&& (!this.board.square[2][0].isOccupied())
-			&& (!this.board.square[2][0].isUnderAttack(this))
-			&& (!this.board.square[3][0].isOccupied())
-			&& (!this.board.square[3][0].isUnderAttack(this))) {
-				canMoveTo.add(this.board.square[2][0]);
+			&& (!this.board.squares[1][0].isOccupied())
+			&& (!this.board.squares[2][0].isOccupied())
+			&& (!this.board.squares[2][0].isUnderAttack(this))
+			&& (!this.board.squares[3][0].isOccupied())
+			&& (!this.board.squares[3][0].isUnderAttack(this))) {
+				canMoveTo.add(this.board.squares[2][0]);
 			}
 			if(rightRookSquare.isOccupied() 
 			&& rightRookSquare.getPiece().type == Type.ROOK
 			&& (!rightRookSquare.getPiece().hasMoved)
-			&& (!this.board.square[5][0].isOccupied())
-			&& (!this.board.square[5][0].isUnderAttack(this))
-			&& (!this.board.square[6][0].isOccupied())
-			&& (!this.board.square[6][0].isUnderAttack(this))) {
-				canMoveTo.add(this.board.square[6][0]);
+			&& (!this.board.squares[5][0].isOccupied())
+			&& (!this.board.squares[5][0].isUnderAttack(this))
+			&& (!this.board.squares[6][0].isOccupied())
+			&& (!this.board.squares[6][0].isUnderAttack(this))) {
+				canMoveTo.add(this.board.squares[6][0]);
 			}
 		} else if(this.side == Side.white) {
-			Square leftRookSquare = this.board.square[0][7];
-			Square rightRookSquare = this.board.square[7][7];
+			Square leftRookSquare = this.board.squares[0][7];
+			Square rightRookSquare = this.board.squares[7][7];
 			if(leftRookSquare.isOccupied() 
 			&& leftRookSquare.getPiece().type == Type.ROOK
 			&& (!leftRookSquare.getPiece().hasMoved)
-			&& (!this.board.square[1][7].isOccupied())
-			&& (!this.board.square[2][7].isOccupied())
-			&& (!this.board.square[2][7].isUnderAttack(this))
-			&& (!this.board.square[3][7].isOccupied())
-			&& (!this.board.square[3][7].isUnderAttack(this))) {
-				canMoveTo.add(this.board.square[1][7]);
+			&& (!this.board.squares[1][7].isOccupied())
+			&& (!this.board.squares[2][7].isOccupied())
+			&& (!this.board.squares[2][7].isUnderAttack(this))
+			&& (!this.board.squares[3][7].isOccupied())
+			&& (!this.board.squares[3][7].isUnderAttack(this))) {
+				canMoveTo.add(this.board.squares[1][7]);
 			}
 			if(rightRookSquare.isOccupied() 
 			&& rightRookSquare.getPiece().type == Type.ROOK
 			&& (!rightRookSquare.getPiece().hasMoved)
-			&& (!this.board.square[5][7].isOccupied())
-			&& (!this.board.square[5][7].isUnderAttack(this))
-			&& (!this.board.square[6][7].isOccupied())
-			&& (!this.board.square[6][7].isUnderAttack(this))) {
-				canMoveTo.add(this.board.square[6][7]);
+			&& (!this.board.squares[5][7].isOccupied())
+			&& (!this.board.squares[5][7].isUnderAttack(this))
+			&& (!this.board.squares[6][7].isOccupied())
+			&& (!this.board.squares[6][7].isUnderAttack(this))) {
+				canMoveTo.add(this.board.squares[6][7]);
 			}
 		} 
 	}

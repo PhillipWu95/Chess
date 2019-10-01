@@ -7,13 +7,13 @@ import pieces.*;
 
 public class Board {
 	
-	public final Square[][] square = new Square[8][8];
+	public final Square[][] squares = new Square[8][8];
 	
 	public Board() {
 		// TODO Auto-generated constructor stub
 		for(int file = 0; file < 8; file++) {
 			for(int rank = 0; rank < 8; rank++) {
-				square[file][rank] = new Square(this, file, rank);
+				squares[file][rank] = new Square(this, file, rank);
 			}
 		}
 	}
@@ -37,30 +37,46 @@ public class Board {
 				}
 				if((rank==0 || rank == 7) && (file==0 || file == 7)) {
 					type = Type.ROOK;
-					this.square[file][rank].setPiece(new Rook(file, rank, type, side, this));
+					this.squares[file][rank].setPiece(new Rook(file, rank, type, side, this));
+					continue;
 				}
 				if((rank==0 || rank == 7) && (file==1 || file == 6)) {
 					type = Type.KNIGHT;
-					this.square[file][rank].setPiece(new Knight(file, rank, type, side, this));
+					this.squares[file][rank].setPiece(new Knight(file, rank, type, side, this));
+					continue;
 				}
 				if((rank==0 || rank == 7) && (file==2 || file == 5)) {
 					type = Type.BISHOP;
-					this.square[file][rank].setPiece(new Bishop(file, rank, type, side, this));
+					this.squares[file][rank].setPiece(new Bishop(file, rank, type, side, this));
+					continue;
 				}
 				if((rank==0 || rank == 7) && (file==3)) {
 					type = Type.QUEEN;
-					this.square[file][rank].setPiece(new Queen(file, rank, type, side, this));
+					this.squares[file][rank].setPiece(new Queen(file, rank, type, side, this));
+					continue;
 				}
 				if((rank==0 || rank == 7) && (file==4)) {
 					type = Type.KING;
-					this.square[file][rank].setPiece(new King(file, rank, type, side, this));
+					this.squares[file][rank].setPiece(new King(file, rank, type, side, this));
+					continue;
 				}
 				if((rank==1 || rank == 6)) {
 					type = Type.PAWN;
-					this.square[file][rank].setPiece(new Pawn(file, rank, type, side, this));
+					this.squares[file][rank].setPiece(new Pawn(file, rank, type, side, this));
+					continue;
 				}
 				
 			}		
+		}
+		for(file = 0; file<8; file++) {
+			for(rank = 0; rank<8; rank++) {
+				 
+				if(squares[file][rank].getPiece()!=null) {
+					ChessPiece piece = squares[file][rank].getPiece();
+					piece.setAttacking();
+					piece.setCanMoveTo();
+				}
+			}
 		}
 		
 	}
@@ -68,13 +84,18 @@ public class Board {
 	public void draw() {
 		int file = 0;
 		int rank = 0;
-		for(rank = 0; rank < 8; rank++) {
+		for(rank = 7; rank >= -1; rank--) {
+			System.out.printf("%s  |\t", rank+1);
 			for(file = 0; file < 8; file++) {
-				if(this.square[file][rank].getPiece()==null) {
+				if(rank==-1) {
+					System.out.printf("%s\t", (char)(file + (int)('a')));
+					continue;
+				}
+				if(this.squares[file][rank].getPiece()==null) {
 					System.out.printf("#");
 				}
 				else {
-					System.out.printf("%s",this.square[file][rank].getPiece().toString());
+					System.out.printf("%s",this.squares[file][rank].getPiece().toString());
 				}
 				System.out.printf("\t");
 			}
@@ -83,24 +104,6 @@ public class Board {
 		}
 	}
 	
-	
-	
-//	public Square leftNOf(Square square, int n) {
-//		return this.square[square.getFile()-n][square.getRank()];
-//	}
-//
-//	public Square rightNOf(Square square, int n) {
-//		return this.square[square.getFile()+n][square.getRank()];
-//	}
-//	
-//	public Square upNOf(Square square, int n) {
-//		return this.square[square.getFile()][square.getRank()+n];
-//	}
-//	
-//	public Square downNOf(Square square, int n) {
-//		return this.square[square.getFile()][square.getRank()-n];
-//	}
-//	
 	public static void main(String [] args) {
 		Board board = new Board();
 		board.classicalInit();

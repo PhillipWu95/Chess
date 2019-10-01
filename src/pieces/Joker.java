@@ -41,7 +41,7 @@ public Joker(int file, int rank, Type type, Side side, Board board) {
 //	}
 
 	@Override
-	void setAttacking() {
+	public void setAttacking() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -53,7 +53,7 @@ public Joker(int file, int rank, Type type, Side side, Board board) {
 	}
 
 	@Override
-	void setCanMoveTo() {
+	public void setCanMoveTo() {
 		// TODO Auto-generated method stub
 		
 	}
