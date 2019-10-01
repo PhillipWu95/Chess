@@ -53,10 +53,16 @@ public class Pawn extends ChessPiece {
 		boolean validMove = false;
 		Square square = null;
 		
+		this.setAttacking();
+		this.setCanMoveTo();
+		
 		ArrayList<Square> allCanMoveTo = new ArrayList<Square>();
 		allCanMoveTo.addAll(canMoveTo);
 		allCanMoveTo.addAll(enPassantMove);
 		allCanMoveTo.addAll(doubleAdvance);
+		
+		
+		
 		
 		for(Square targetSquare : allCanMoveTo) {
 			System.out.println("Can Move to:");
@@ -199,6 +205,9 @@ public class Pawn extends ChessPiece {
 	
 	public void addDoubleAdvance() {
 		doubleAdvance.clear();
+		if(this.hasMoved) {
+			return;
+		}
 		
 		if(this.side == Side.white) {
 			if(!(this.square.upN(1).isOccupied() || this.square.upN(2).isOccupied())) {
