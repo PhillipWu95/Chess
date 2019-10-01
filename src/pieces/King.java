@@ -66,43 +66,55 @@ public class King extends ChessPiece{
 	
 	@Override
 	public boolean moveTo(int file, int rank) throws KingCapturedException {
-		for(Square square : canMoveTo) {
-			if(square.file == file && square.rank == rank) {
+		
+		boolean validMove = false;
+		Square square = null;
+		this.setCanMoveTo();
+		this.setAttacking();
+		
+		for(Square targetSquare : canMoveTo) {
+			if(targetSquare.file == file && targetSquare.rank == rank) {
 				// if valid move
-				
-				if(!this.hasMoved) {
-					if(this.side==Side.white) {
-						if(file==2 && rank==0) {
-							this.board.squares[0][0].getPiece().moveTo(3,0);
-						}
-						if(file==6 && rank==0) {
-							this.board.squares[7][0].getPiece().moveTo(5,0);
-						}
-					} else if(this.side==Side.black) {
-						if(file==2 && rank==7) {
-							this.board.squares[0][7].getPiece().moveTo(3,7);
-						}
-						if(file==6 && rank==0) {
-							this.board.squares[7][7].getPiece().moveTo(5,7);
-						}
+				validMove = true;
+				square = targetSquare;
+			}
+		}
+		
+		if(validMove) {
+
+			if(!this.hasMoved) {
+				if(this.side==Side.white) {
+					if(file==2 && rank==0) {
+						this.board.squares[0][0].getPiece().moveTo(3,0);
+					}
+					if(file==6 && rank==0) {
+						this.board.squares[7][0].getPiece().moveTo(5,0);
+					}
+				} else if(this.side==Side.black) {
+					if(file==2 && rank==7) {
+						this.board.squares[0][7].getPiece().moveTo(3,7);
+					}
+					if(file==6 && rank==0) {
+						this.board.squares[7][7].getPiece().moveTo(5,7);
 					}
 				}
-				
-				if(square.isOccupied()) {
-					square.getPiece().captured();
-				}
-				this.square.removePiece();
-				this.resetAttacking();
-				this.resetCanMoveTo();
-				
-				
-				square.setPiece(this);
-				this.square = square;
-				this.setAttacking();
-				this.setCanMoveTo();
-				this.hasMoved = true;
-				return true;
 			}
+			
+			if(square.isOccupied()) {
+				square.getPiece().captured();
+			}
+			this.square.removePiece();
+			this.resetAttacking();
+			this.resetCanMoveTo();
+			
+			
+			square.setPiece(this);
+			this.square = square;
+			this.setAttacking();
+			this.setCanMoveTo();
+			this.hasMoved = true;
+			return true;
+			
 		}
 		return false;
 	}
