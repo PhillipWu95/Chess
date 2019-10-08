@@ -4,14 +4,19 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import java.awt.GridLayout;
+import java.awt.Image;
+
 import javax.swing.JPanel;
 import javax.swing.JComboBox;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import javax.swing.JSplitPane;
 import javax.swing.JLabel;
@@ -19,9 +24,15 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JTextField;
 
+import board.Board;
+import board.Square;
+import pieces.ChessPiece;
+
 public class ChessGame {
 
 	private JFrame frame;
+	private boolean pieceSelected;
+	private Board board;
 
 	/**
 	 * Launch the application.
@@ -43,15 +54,23 @@ public class ChessGame {
 	 * Create the application.
 	 */
 	public ChessGame() {
+		pieceSelected = false;
+		board = new Board();
+		board.classicalInit();
 		initialize();
 	}
+	
 
+	private void selectPiece() {
+		
+	}
+	
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 800+4*12, 600+4*12);
+		frame.setBounds(100, 100, 875+4*12, 675+4*12);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new GridLayout(1, 0, 0, 0));
 		
@@ -60,11 +79,20 @@ public class ChessGame {
 		background.setLayout(null);
 		
 		JPanel options = new JPanel();
-		options.setBounds(12, 12, 200, 600);
+		options.setBounds(12, 12, 200, 675);
 		background.add(options);
+		options.setLayout(null);
+		
+		JButton btnNewButton = new JButton("Start");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		btnNewButton.setBounds(31, 421, 139, 55);
+		options.add(btnNewButton);
 		
 		JPanel boardView = new JPanel();
-		boardView.setBounds(12+200, 12, 600, 600);
+		boardView.setBounds(12+200, 12, 675, 675);
 		background.add(boardView);
 		GridBagLayout gbl_boardView = new GridBagLayout();
 		gbl_boardView.columnWidths = new int[]{0};
@@ -74,29 +102,11 @@ public class ChessGame {
 		boardView.setLayout(gbl_boardView);
 		
 		
-//		JPanel board = new JPanel();
-//		
-//		GridBagConstraints boardC = new GridBagConstraints();
-//		boardC.fill = GridBagConstraints.NONE;
-//		boardC.gridx = 1;
-//		boardC.gridy = 0;
-//		boardC.gridwidth = 8;
-//		boardC.gridheight = 8;
-//		boardC.weightx = 0;
-//		boardC.weighty = 0;
-//		
-//		boardView.add(board, boardC);
-//		
-//		JLabel boardLabel = new JLabel();
-//		Image newImage = 
-//		ImageIcon boardImg = new ImageIcon("./resource/chessboard_T.png");
-//		boardLabel.setIcon(boardImg);
-//		board.add(boardLabel);
-//
-//		
+
 		for(int column = 1; column <= 8; column++) {
+			// file label
 			String str = "" + (char)(((int)'a') + column - 1);
-			JLabel lb = new JLabel(str);
+			JLabel lb = new JLabel(str); 
 			GridBagConstraints c = new GridBagConstraints();
 			c.fill = GridBagConstraints.NONE;
 			c.gridx = column;
@@ -107,6 +117,7 @@ public class ChessGame {
 		}
 		
 		for(int row = 0; row <= 7; row++) {
+			// rank label
 			String str = "" + (8 - row);
 			JLabel lb = new JLabel(str);
 			GridBagConstraints c = new GridBagConstraints();
@@ -121,88 +132,52 @@ public class ChessGame {
 		for(int row = 0; row <= 7; row++) {
 			for(int column = 1; column <= 8; column++) {
 				int file = column - 1;
-				int rank = 8 - row;
+				int rank = 8 - row - 1;
+				Square square = this.board.squares[file][rank];
+//				JLabel lb = new JLabel(imageIcon);
 				JLabel lb = new JLabel();
+		        lb.setPreferredSize(new Dimension(75,75));
+				//icon
+				
+				
+				// board
+				
+				
 				GridBagConstraints c = new GridBagConstraints();
 				lb.setOpaque(true);
-				if((file + rank) % 2 == 1) {
-					lb.setBackground(Color.BLACK);
+				if((file + rank) % 2 == 0) {
+					lb.setBackground(Color.green);
 				}
 				else {
 					lb.setBackground(Color.white);
 				}
+				lb.addMouseListener(new MouseAdapter()  
+				{  
+				    public void mouseClicked(MouseEvent e)  
+				    {  
+				    	if(!pieceSelected && square.isOccupied()) {
+				    		pieceSelected = true;
+				    		lb.setBackground(Color.yellow);
+				    	}
+
+				    }  
+				});
 				c.fill = GridBagConstraints.BOTH;
 				c.gridx = column;
 				c.gridy = row;
 				c.weightx = 1.0/9;
 				c.weighty = 1.0/9;
 				boardView.add(lb, c);
+				if(square.isOccupied()) {
+//					ImageIcon imageIcon = new ImageIcon("./resource/chess_piece_black_bishop_T.png"); // load the image to a imageIcon
+					ImageIcon imageIcon = new ImageIcon(square.getImage()); // load the image to a imageIcon
+					Image image = imageIcon.getImage(); // transform it 
+					Image newimg = image.getScaledInstance(82, 82,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+					imageIcon = new ImageIcon(newimg);  // transform it back
+					lb.setIcon(imageIcon);
+				}
 			}
 		}
-		/*
-		JLabel lbH = new JLabel("h");
-		GridBagConstraints cH = new GridBagConstraints();
-		cH.fill = GridBagConstraints.VERTICAL;
-		cH.gridx = 0;
-		cH.gridy = 0;
-		boardView.add(lbH, cH);
-		
-		JLabel lbG = new JLabel("g");
-		GridBagConstraints cG = new GridBagConstraints();
-		cG.fill = GridBagConstraints.VERTICAL;
-		cG.gridx = 0;
-		cG.gridy = 1;
-		boardView.add(lbG, cG);
-		
-		JLabel lbF = new JLabel("f");
-		GridBagConstraints cF = new GridBagConstraints();
-		cF.fill = GridBagConstraints.VERTICAL;
-		cF.gridx = 0;
-		cF.gridy = 2;
-		boardView.add(lbF, cF);
-		
-		JLabel lbE = new JLabel("e");
-		GridBagConstraints cE = new GridBagConstraints();
-		cE.fill = GridBagConstraints.VERTICAL;
-		cE.gridx = 0;
-		cE.gridy = 3;
-		boardView.add(lbE, cE);
-		
-		JLabel lbD = new JLabel("d");
-		GridBagConstraints cD = new GridBagConstraints();
-		cD.fill = GridBagConstraints.VERTICAL;
-		cD.gridx = 0;
-		cD.gridy = 4;
-		boardView.add(lbD, cD);
-		
-		JLabel lbC = new JLabel("c");
-		GridBagConstraints cC = new GridBagConstraints();
-		cC.fill = GridBagConstraints.VERTICAL;
-		cC.gridx = 0;
-		cC.gridy = 5;
-		boardView.add(lbC, cC);
-		
-		JLabel lbB = new JLabel("b");
-		GridBagConstraints cB = new GridBagConstraints();
-		cB.fill = GridBagConstraints.VERTICAL;
-		cB.gridx = 0;
-		cB.gridy = 6;
-		boardView.add(lbB, cB);
-		
-		JLabel lbA = new JLabel("a");
-		GridBagConstraints cA = new GridBagConstraints();
-		cA.fill = GridBagConstraints.VERTICAL;
-		cA.gridx = 0;
-		cA.gridy = 7;
-		boardView.add(lbA, cA);
-		
-		JLabel lbEmpty = new JLabel("/");
-		GridBagConstraints cEmpty = new GridBagConstraints();
-		cEmpty.fill = GridBagConstraints.VERTICAL;
-		cEmpty.gridx = 0;
-		cEmpty.gridy = 8;
-		boardView.add(lbEmpty, cEmpty);
-		*/
 		
 		
 		

@@ -108,4 +108,6 @@ public abstract class ChessPiece {
 	void resetCanMoveTo() {
 		canMoveTo.clear();
 	}
+	
+	abstract public String getImage();
 }

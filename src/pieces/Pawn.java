@@ -312,5 +312,17 @@ public class Pawn extends ChessPiece {
 	public String toString() {
 		return "P";
 	}
+
+	@Override
+	public String getImage() {
+		// TODO Auto-generated method stub
+		if(this.side == Side.black) {
+			return "./resource/chess_piece_black_pawn_T.png";
+		}
+		else {
+			return "./resource/chess_piece_white_pawn_T.png";
+		}
+
+	}
 	
 }

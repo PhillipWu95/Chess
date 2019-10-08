@@ -73,5 +73,17 @@ public class Queen extends ChessPiece {
 	public String toString() {
 		return "Q";
 	}
+	
+	@Override
+	public String getImage() {
+		// TODO Auto-generated method stub
+		if(this.side == Side.black) {
+			return "./resource/chess_piece_black_queen_T.png";
+		}
+		else {
+			return "./resource/chess_piece_white_queen_T.png";
+		}
+
+	}
 
 }

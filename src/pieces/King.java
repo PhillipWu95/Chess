@@ -182,5 +182,17 @@ public class King extends ChessPiece{
 	public String toString() {
 		return "+";
 	}
+	
+	@Override
+	public String getImage() {
+		// TODO Auto-generated method stub
+		if(this.side == Side.black) {
+			return "./resource/chess_piece_black_king_T.png";
+		}
+		else {
+			return "./resource/chess_piece_white_king_T.png";
+		}
 
+	}
+	
 }

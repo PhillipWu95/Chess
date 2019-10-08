@@ -6,6 +6,7 @@ import board.Board;
 import board.Square;
 
 public class Bishop extends ChessPiece {
+	
 
 	public Bishop(int file, int rank, Type type, Side side, Board board) {
 		super(file, rank, type, side, board);
@@ -68,6 +69,19 @@ public class Bishop extends ChessPiece {
 	public String toString() {
 		return "A";
 	}
+	
+	@Override
+	public String getImage() {
+		// TODO Auto-generated method stub
+		if(this.side == Side.black) {
+			return "./resource/chess_piece_black_bishop_T.png";
+		}
+		else {
+			return "./resource/chess_piece_white_bishop_T.png";
+		}
 
+	}
+	
+	
 
 }

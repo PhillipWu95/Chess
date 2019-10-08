@@ -110,6 +110,8 @@ public class Square {
 		return this.board.squares[this.getFile()][this.getRank()-n];
 	}
 	
-	
+	public String getImage() {
+		return this.piece.getImage();
+	}
 
 }
