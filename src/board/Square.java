@@ -1,8 +1,14 @@
 package board;
 
+import java.awt.Color;
+import java.awt.Image;
 import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+
 import pieces.ChessPiece;
+import pieces.King.KingCapturedException;
 
 public class Square {
 	public final int file; //column
@@ -10,6 +16,7 @@ public class Square {
 	private ChessPiece piece;
 	private ArrayList<ChessPiece> underAttack;
 	private Board board;
+	private JLabel label;
 	
 	public Square(int file, int rank) {
 		// TODO Auto-generated constructor stub
@@ -86,6 +93,14 @@ public class Square {
 		System.out.println(square.toString());
 	}
 	
+	public void setLabel(JLabel label) {
+		this.label = label;
+	}
+	
+	public JLabel getLabel() {
+		return this.label;
+	}
+	
 	public int getFile() {
 		return file;
 	}
@@ -112,6 +127,41 @@ public class Square {
 	
 	public String getImage() {
 		return this.piece.getImage();
+	}
+	
+	public boolean moveTo(Square square) throws KingCapturedException {
+		boolean result;
+		result = this.getPiece().moveTo(square.file, square.rank);
+		this.reDraw();
+		square.reDraw();
+		return result;
+	}
+	
+	public void reDraw() {
+		if(this.isOccupied()) {
+			ImageIcon imageIcon = new ImageIcon(this.getImage()); // load the image to a imageIcon
+			Image image = imageIcon.getImage(); // transform it 
+			Image newimg = image.getScaledInstance(82, 82,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+			imageIcon = new ImageIcon(newimg);  // transform it back
+			this.label.setIcon(imageIcon);
+		}
+		else {
+			this.label.setIcon(null);
+		}
+		
+	}
+	
+	public void setBackground() {
+		if((file + rank) % 2 == 0) {
+			label.setBackground(Color.green);
+		}
+		else {
+			label.setBackground(Color.white);
+		}
+	}
+	
+	public void setSelectedBackground() {
+		label.setBackground(Color.yellow);
 	}
 
 }

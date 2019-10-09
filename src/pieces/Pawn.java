@@ -91,14 +91,10 @@ public class Pawn extends ChessPiece {
 			
 			//enpassant attack check
 			if(enPassantMove.contains(square)) {
-					(this.side==Side.white ? square.downN(1) : square.upN(1))
-				.getPiece().captured();
+				Square targetSquare = (this.side==Side.white ? square.downN(1) : square.upN(1));
+				targetSquare.getPiece().captured();
+				targetSquare.reDraw();
 			}
-			
-//			if(attacking.contains(square)) {
-//				square.getPiece().captured();
-//			}
-			
 			
 			this.square.removePiece();
 			this.square.reCalculateUnderAttack();

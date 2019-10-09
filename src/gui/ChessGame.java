@@ -27,12 +27,14 @@ import javax.swing.JTextField;
 import board.Board;
 import board.Square;
 import pieces.ChessPiece;
+import pieces.King.KingCapturedException;
 
 public class ChessGame {
 
 	private JFrame frame;
 	private boolean pieceSelected;
 	private Board board;
+	private Square selectedSquare;
 
 	/**
 	 * Launch the application.
@@ -60,10 +62,6 @@ public class ChessGame {
 		initialize();
 	}
 	
-
-	private void selectPiece() {
-		
-	}
 	
 	/**
 	 * Initialize the contents of the frame.
@@ -133,10 +131,15 @@ public class ChessGame {
 			for(int column = 1; column <= 8; column++) {
 				int file = column - 1;
 				int rank = 8 - row - 1;
-				Square square = this.board.squares[file][rank];
+				
+				
 //				JLabel lb = new JLabel(imageIcon);
 				JLabel lb = new JLabel();
+				Square square = this.board.squares[file][rank];
+		        square.setLabel(lb);
+		        square.reDraw();
 		        lb.setPreferredSize(new Dimension(75,75));
+		        
 				//icon
 				
 				
@@ -145,19 +148,28 @@ public class ChessGame {
 				
 				GridBagConstraints c = new GridBagConstraints();
 				lb.setOpaque(true);
-				if((file + rank) % 2 == 0) {
-					lb.setBackground(Color.green);
-				}
-				else {
-					lb.setBackground(Color.white);
-				}
+				square.setBackground();
 				lb.addMouseListener(new MouseAdapter()  
 				{  
 				    public void mouseClicked(MouseEvent e)  
 				    {  
 				    	if(!pieceSelected && square.isOccupied()) {
 				    		pieceSelected = true;
-				    		lb.setBackground(Color.yellow);
+				    		selectedSquare = square;
+				    		square.setSelectedBackground();
+				    	}
+				    	else if(pieceSelected){
+				    		try {
+								boolean moved = selectedSquare.moveTo(square);
+//								if(moved || (selectedSquare.equals(square))) {
+								pieceSelected = false;
+								selectedSquare.setBackground();
+//								}
+							} catch (KingCapturedException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+				    		
 				    	}
 
 				    }  
@@ -168,14 +180,15 @@ public class ChessGame {
 				c.weightx = 1.0/9;
 				c.weighty = 1.0/9;
 				boardView.add(lb, c);
-				if(square.isOccupied()) {
-//					ImageIcon imageIcon = new ImageIcon("./resource/chess_piece_black_bishop_T.png"); // load the image to a imageIcon
-					ImageIcon imageIcon = new ImageIcon(square.getImage()); // load the image to a imageIcon
-					Image image = imageIcon.getImage(); // transform it 
-					Image newimg = image.getScaledInstance(82, 82,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
-					imageIcon = new ImageIcon(newimg);  // transform it back
-					lb.setIcon(imageIcon);
-				}
+				
+//				if(square.isOccupied()) {
+////					ImageIcon imageIcon = new ImageIcon("./resource/chess_piece_black_bishop_T.png"); // load the image to a imageIcon
+//					ImageIcon imageIcon = new ImageIcon(square.getImage()); // load the image to a imageIcon
+//					Image image = imageIcon.getImage(); // transform it 
+//					Image newimg = image.getScaledInstance(82, 82,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+//					imageIcon = new ImageIcon(newimg);  // transform it back
+//					lb.setIcon(imageIcon);
+//				}
 			}
 		}
 		

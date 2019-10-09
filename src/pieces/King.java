@@ -29,6 +29,7 @@ public class King extends ChessPiece{
 		// TODO Auto-generated method stub
 		Square square;
 		this.resetAttacking();
+		
 		int thisFile = this.square.getFile();
 		int thisRank = this.square.getRank();
 
@@ -45,9 +46,16 @@ public class King extends ChessPiece{
 //							continue;
 //						}
 //					}
-					if(square.getUnderAttack().contains(this.side.other())) {
-						continue;
+					for(ChessPiece piece : square.getUnderAttack()) {
+						if (piece.side != this.side) {
+//							System.out.println("Square under attack");
+							continue;
+							
+						}
 					}
+//					if(square.getUnderAttack().contains(this.side.other())) {
+//						continue;
+//					}
 					square.setUnderAttack(this);
 					this.attacking.add(square);
 				}
@@ -69,8 +77,9 @@ public class King extends ChessPiece{
 		
 		boolean validMove = false;
 		Square square = null;
-		this.setCanMoveTo();
 		this.setAttacking();
+		this.setCanMoveTo();
+		
 		
 		for(Square targetSquare : canMoveTo) {
 			if(targetSquare.file == file && targetSquare.rank == rank) {
@@ -83,19 +92,28 @@ public class King extends ChessPiece{
 		if(validMove) {
 
 			if(!this.hasMoved) {
+				// castle check
 				if(this.side==Side.white) {
 					if(file==2 && rank==0) {
 						this.board.squares[0][0].getPiece().moveTo(3,0);
+						this.board.squares[0][0].reDraw();
+						this.board.squares[3][0].reDraw();
 					}
 					if(file==6 && rank==0) {
 						this.board.squares[7][0].getPiece().moveTo(5,0);
+						this.board.squares[7][0].reDraw();
+						this.board.squares[5][0].reDraw();
 					}
 				} else if(this.side==Side.black) {
 					if(file==2 && rank==7) {
 						this.board.squares[0][7].getPiece().moveTo(3,7);
+						this.board.squares[0][7].reDraw();
+						this.board.squares[3][7].reDraw();
 					}
 					if(file==6 && rank==0) {
 						this.board.squares[7][7].getPiece().moveTo(5,7);
+						this.board.squares[7][7].reDraw();
+						this.board.squares[5][7].reDraw();
 					}
 				}
 			}
@@ -103,12 +121,24 @@ public class King extends ChessPiece{
 			if(square.isOccupied()) {
 				square.getPiece().captured();
 			}
+//			this.square.removePiece();
+//			this.resetAttacking();
+//			this.resetCanMoveTo();
+//			
+//			
+//			square.setPiece(this);
+//			this.square = square;
+//			this.setAttacking();
+//			this.setCanMoveTo();
+//			this.hasMoved = true;
+//			return true;
 			this.square.removePiece();
-			this.resetAttacking();
-			this.resetCanMoveTo();
-			
+			this.square.reCalculateUnderAttack();
+//			this.resetAttacking();
+//			this.resetCanMoveTo();
 			
 			square.setPiece(this);
+			square.reCalculateUnderAttack();
 			this.square = square;
 			this.setAttacking();
 			this.setCanMoveTo();
@@ -121,7 +151,19 @@ public class King extends ChessPiece{
 	
 	public void setCanMoveTo() {
 		for(Square square : attacking) {
-			canMoveTo.add(square);
+			boolean canMove = true;
+			for(ChessPiece piece : square.getUnderAttack()) {
+				if(piece.side != this.side) {
+					canMove = false;
+				}
+			}
+			if(square.isOccupied() && square.getPiece().side == this.side) {
+				canMove = false;
+			}
+			if(canMove) {
+				this.canMoveTo.add(square);
+			}
+			
 		}
 		if(!this.hasMoved) {
 			this.addCastleMove();
