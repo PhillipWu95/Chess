@@ -33,6 +33,7 @@ public class Board {
 					side = Side.black;
 				}
 				else {
+					this.squares[file][rank].setPiece(null);
 					continue;
 				}
 				if((rank==0 || rank == 7) && (file==0 || file == 7)) {

@@ -28,6 +28,7 @@ import board.Board;
 import board.Square;
 import pieces.ChessPiece;
 import pieces.King.KingCapturedException;
+import pieces.Side;
 
 public class ChessGame {
 
@@ -35,6 +36,7 @@ public class ChessGame {
 	private boolean pieceSelected;
 	private Board board;
 	private Square selectedSquare;
+	private boolean whiteMove;
 
 	/**
 	 * Launch the application.
@@ -57,6 +59,7 @@ public class ChessGame {
 	 */
 	public ChessGame() {
 		pieceSelected = false;
+		whiteMove = true;
 		board = new Board();
 		board.classicalInit();
 		initialize();
@@ -84,6 +87,15 @@ public class ChessGame {
 		JButton btnNewButton = new JButton("Start");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				pieceSelected = false;
+				whiteMove = true;
+//				board = new Board();
+				board.classicalInit();
+				for(int file = 0; file < 8; file++) {
+					for(int rank = 0; rank < 8; rank++) {
+						board.squares[file][rank].reDraw();
+					}
+				}
 			}
 		});
 		btnNewButton.setBounds(31, 421, 139, 55);
@@ -133,17 +145,13 @@ public class ChessGame {
 				int rank = 8 - row - 1;
 				
 				
-//				JLabel lb = new JLabel(imageIcon);
+
 				JLabel lb = new JLabel();
 				Square square = this.board.squares[file][rank];
 		        square.setLabel(lb);
 		        square.reDraw();
 		        lb.setPreferredSize(new Dimension(75,75));
 		        
-				//icon
-				
-				
-				// board
 				
 				
 				GridBagConstraints c = new GridBagConstraints();
@@ -152,8 +160,15 @@ public class ChessGame {
 				lb.addMouseListener(new MouseAdapter()  
 				{  
 				    public void mouseClicked(MouseEvent e)  
-				    {  
+				    {  	
+
 				    	if(!pieceSelected && square.isOccupied()) {
+				    		if(whiteMove && square.getPiece().side != Side.white) {
+				    			return;
+				    		}
+				    		if(!whiteMove && square.getPiece().side != Side.black) {
+				    			return;
+				    		}
 				    		pieceSelected = true;
 				    		selectedSquare = square;
 				    		square.setSelectedBackground();
@@ -161,10 +176,11 @@ public class ChessGame {
 				    	else if(pieceSelected){
 				    		try {
 								boolean moved = selectedSquare.moveTo(square);
-//								if(moved || (selectedSquare.equals(square))) {
 								pieceSelected = false;
 								selectedSquare.setBackground();
-//								}
+								if(moved) {
+									whiteMove = !whiteMove;
+								}
 							} catch (KingCapturedException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
@@ -180,15 +196,6 @@ public class ChessGame {
 				c.weightx = 1.0/9;
 				c.weighty = 1.0/9;
 				boardView.add(lb, c);
-				
-//				if(square.isOccupied()) {
-////					ImageIcon imageIcon = new ImageIcon("./resource/chess_piece_black_bishop_T.png"); // load the image to a imageIcon
-//					ImageIcon imageIcon = new ImageIcon(square.getImage()); // load the image to a imageIcon
-//					Image image = imageIcon.getImage(); // transform it 
-//					Image newimg = image.getScaledInstance(82, 82,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
-//					imageIcon = new ImageIcon(newimg);  // transform it back
-//					lb.setIcon(imageIcon);
-//				}
 			}
 		}
 		
