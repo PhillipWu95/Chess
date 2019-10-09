@@ -140,6 +140,8 @@ public class Square {
 	public void reDraw() {
 		if(this.isOccupied()) {
 			ImageIcon imageIcon = new ImageIcon(this.getImage()); // load the image to a imageIcon
+			
+//			ImageIcon imageIcon = new ImageIcon(getClass().getResource(this.getImage()));
 			Image image = imageIcon.getImage(); // transform it 
 			Image newimg = image.getScaledInstance(82, 82,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
 			imageIcon = new ImageIcon(newimg);  // transform it back

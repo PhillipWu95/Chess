@@ -49,10 +49,10 @@ public class Knight extends ChessPiece {
 	public String getImage() {
 		// TODO Auto-generated method stub
 		if(this.side == Side.black) {
-			return "./resource/chess_piece_black_knight_T.png";
+			return "resource/chess_piece_black_knight_T.png";
 		}
 		else {
-			return "./resource/chess_piece_white_knight_T.png";
+			return "resource/chess_piece_white_knight_T.png";
 		}
 
 	}
